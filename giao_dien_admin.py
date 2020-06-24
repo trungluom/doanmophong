@@ -6,6 +6,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 # huy dep trai
+#luom dep trai
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets

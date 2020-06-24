@@ -7,6 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 # huy dep trai
 #luom dep trai
+#luom bus u=cu
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets

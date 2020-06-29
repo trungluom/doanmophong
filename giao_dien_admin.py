@@ -1,14 +1,3 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'giao_dien_admin.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.2
-#
-# WARNING! All changes made in this file will be lost!
-# huy dep trai
-#luom dep trai
-#luom bus u=cu
-
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import (QDialog,QApplication, QWidget, QToolTip, QPushButton, QMessageBox) 
@@ -20,11 +9,10 @@ from PyQt5.QtCore import QCoreApplication, Qt
 # from PyQt5.QtCore import QTimer,QByteArray, QDir
 import  sys
 import cx_Oracle
-
+# conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
 class Ui_MainWindow(QDialog):
     def closeEvent(self, event):
         """Generate 'question' dialog on clicking 'X' button in title bar.
-
         Reimplement the closeEvent() event handler to include a 'Question'
         dialog with options on how to proceed - Save, Close, Cancel buttons
         """
@@ -37,14 +25,66 @@ class Ui_MainWindow(QDialog):
             app.quit()
         else:
             pass
-    # def keyPressEvent(self, event):
-    #     """Close application from escape key.
 
-    #     results in QMessageBox dialog from closeEvent, good but how/why?
-    #     """
-    #     if event.key() == Qt.Key_Escape:
-    #         self.close()
+    def search(self):
+        id_msv=self.lineEdit.text()        
+        sv_ten=self.lineEdit_2.text()        
+        ngay_sinh=self.lineEdit_3.text()        
+        gioi_tinh=self.lineEdit_4.text()    
+        dia_chi=self.lineEdit_5.text()        
+        id_lnc=self.lineEdit_6.text()        
+        nganh_hoc=self.lineEdit_7.text()
+        id_msv=str("%"+id_msv+"%") 
+        print(id_msv)
+        sv_ten=str(sv_ten) 
+        ngay_sinh=str(ngay_sinh)
+        gioi_tinh=str(gioi_tinh)
+        dia_chi=str(dia_chi)
+        id_lnc=str(id_lnc) 
+        nganh_hoc=str(nganh_hoc)
+        rows = (id_msv, sv_ten,ngay_sinh,gioi_tinh,dia_chi,id_lnc, nganh_hoc)
 
+        conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        mysearch = conn.cursor()
+        search = "select * from DOAN3.SINH_VIEN where lower(id_msv) LIKE :id_msv1"
+        mysearch.execute(search,id_msv1=id_msv)
+        mysearch2 = conn.cursor()
+        search2= "select * from DOAN3.SINH_VIEN where sv_ten=:sv_ten1"
+        mysearch2.execute(search2,sv_ten1=sv_ten)
+        data1 = mysearch2.fetchall()
+        data = mysearch.fetchall()
+        m=[]
+        # self.len= [0,1]
+        # self.data=list(self.data)
+        for x in data1:
+            m=x
+        for x in data:
+            m=x
+            print(m)
+        # print(self.data[0],self.data[1])
+        # print(m)
+
+        # ep kieu------------------------------
+        m=list(m)
+        # m[3]=str(m[3])
+        # m[4]=str(m[4])
+        print(m)
+            # print(self.x)
+            # print(type(self.x))
+        stu_info=['a','a']
+        stu_info=m
+        koco = 'Khong co du lieu'
+        koco=str(koco)
+        # # print(self.stu_info)
+        # # self.stu_info = str(self.stu_info1)
+        print(type(stu_info))
+        if len(stu_info) > 0:
+            stu_info = str(stu_info[0]+' '+stu_info[1]+' '+stu_info[2]+' '+stu_info[3]+' '+stu_info[4]+' '+stu_info[5]+' '+stu_info[6])
+            self.listWidget_3.clear()
+            self.listWidget_3.addItem(stu_info)
+            self.listWidget_3.setCurrentRow(0)
+        else:
+            self.listWidget_3.addItem(koco)
     def clear1(self):
         self.lineEdit.clear()
         self.lineEdit_2.clear()
@@ -53,6 +93,7 @@ class Ui_MainWindow(QDialog):
         self.lineEdit_5.clear()
         self.lineEdit_6.clear()
         self.lineEdit_7.clear()
+        self.listWidget_3.clear()
     def clear2(self):
         self.lineEdit_8.clear()
         self.lineEdit_9.clear()
@@ -92,11 +133,60 @@ class Ui_MainWindow(QDialog):
         conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
         myinsert = conn.cursor()
         # insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH, DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:id_msv, :sv_ten, :ngay_sinh, :gioi_tinh, :dia_chi, :id_lnc, :nganh_hoc)"
-        insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH, DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:1,:2,:3,:4,:5,:6,:7)"
+        insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH,DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:1,:2,:3,:4,:5,:6,:7)"
         myinsert.execute(insert,rows)
-
         conn.commit()
         print(myinsert)
+    def delete_row (self):
+        id_msv=self.lineEdit.text() 
+        # sv_ten=self.lineEdit_2.text()
+        id_msv=str(id_msv)
+        # sv_ten=str(sv_ten) 
+        # rows1 = (id_msv,sv_ten)
+        conn1 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        mydelete = conn1.cursor()
+        print(id_msv)
+        delete = "DELETE FROM DOAN3.SINH_VIEN WHERE ID_MSV = :id_msv1"
+        mydelete.execute(delete, id_msv1 = id_msv)
+        # mydelete.execute(delete)
+        conn1.commit()
+        print(mydelete)
+        pass
+    def update_row (self):
+        id_msv=self.lineEdit.text()        
+        sv_ten=self.lineEdit_2.text()        
+        ngay_sinh=self.lineEdit_3.text()        
+        gioi_tinh=self.lineEdit_4.text()    
+        dia_chi=self.lineEdit_5.text()        
+        id_lnc=self.lineEdit_6.text()        
+        nganh_hoc=self.lineEdit_7.text()
+        if len(id_lnc)>0:
+            id_lnc=str(id_lnc)
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Ban chua nhap, hay nhap di",
+            QMessageBox.Cancel)
+            return 
+        id_msv=str(id_msv)
+        print(id_msv)
+        sv_ten=str(sv_ten) 
+        ngay_sinh=str(ngay_sinh)
+        gioi_tinh=str(gioi_tinh)
+        dia_chi=str(dia_chi)
+        # id_lnc=str(id_lnc) 
+        nganh_hoc=str(nganh_hoc)
+        rows = (id_msv, sv_ten,ngay_sinh,gioi_tinh,dia_chi,id_lnc, nganh_hoc)
+        
+        conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        myupdate = conn.cursor()
+        # if len(myupdate) > 0:
+        update = "UPDATE DOAN3.SINH_VIEN SET ID_LNC = :id_lnc1 WHERE ID_MSV = :id_msv1"
+        myupdate.execute(update,id_lnc1=id_lnc,id_msv1=id_msv)
+        conn.commit()
+        # else:
+        #     print("no")
+        pass
     def giaodien_admin(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(861, 655)
@@ -245,12 +335,15 @@ class Ui_MainWindow(QDialog):
         self.horizontalLayout_2.addWidget(self.pushButton_3)
         self.pushButton_4 = QtWidgets.QPushButton(self.tab_1)
         self.pushButton_4.setObjectName("pushButton_4")
+        self.pushButton_4.clicked.connect(self.delete_row)
         self.horizontalLayout_2.addWidget(self.pushButton_4)
         self.pushButton_5 = QtWidgets.QPushButton(self.tab_1)
         self.pushButton_5.setObjectName("pushButton_5")
+        self.pushButton_5.clicked.connect(self.search)
         self.horizontalLayout_2.addWidget(self.pushButton_5)
         self.pushButton_6 = QtWidgets.QPushButton(self.tab_1)
         self.pushButton_6.setObjectName("pushButton_6")
+        self.pushButton_6.clicked.connect(self.update_row)
         self.horizontalLayout_2.addWidget(self.pushButton_6)
         self.pushButton_7 = QtWidgets.QPushButton(self.tab_1)
         self.pushButton_7.setObjectName("pushButton_7")

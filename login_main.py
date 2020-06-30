@@ -15,7 +15,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 # import mysql.connector
 import cx_Oracle
 import sys
-from giaodien_admin import *
+from giao_dien_admin import *
 
 class Ui_Form(object):
     # def __init__(self, parent=None):
@@ -38,8 +38,8 @@ class Ui_Form(object):
         print(mycursor)
         if (len(data)>0):
             self.window=QtWidgets.QMainWindow()
-            self.ui=giaodien_admin()
-            self.ui.setup(self.window)
+            self.ui=Ui_MainWindow()
+            self.ui.giaodien_admin(self.window)
             self.window.show()
             # self.app.hide()
             # print('thanh cong')          

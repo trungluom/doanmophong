@@ -16,7 +16,7 @@ class Do_an(QMainWindow):
     # w.show()
     # sys.exit(app.exec_())
 
-    def __init__(self, parent=None):
+    def __init__(self,parent=None):
         # call QWidget constructor
         super(Do_an, self).__init__()
         self.ui = Ui_MainWindow()

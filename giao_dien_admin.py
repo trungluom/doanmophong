@@ -12,21 +12,17 @@ import cx_Oracle
 # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
 class Ui_MainWindow(QDialog):
     def closeEvent(self, event):
-        """Generate 'question' dialog on clicking 'X' button in title bar.
-        Reimplement the closeEvent() event handler to include a 'Question'
-        dialog with options on how to proceed - Save, Close, Cancel buttons
-        """
         reply = QMessageBox.question(
             self, "Message",
             "Are you sure you want to quit? Any unsaved work will be lost.",
             QMessageBox.Close | QMessageBox.Cancel)
-
         if reply == QMessageBox.Close:
             app.quit()
         else:
             pass
 
     def search(self):
+        self.listWidget_3.clear()
         id_msv=self.lineEdit.text()        
         sv_ten=self.lineEdit_2.text()        
         ngay_sinh=self.lineEdit_3.text()        
@@ -42,49 +38,64 @@ class Ui_MainWindow(QDialog):
         dia_chi=str(dia_chi)
         id_lnc=str(id_lnc) 
         nganh_hoc=str(nganh_hoc)
-        rows = (id_msv, sv_ten,ngay_sinh,gioi_tinh,dia_chi,id_lnc, nganh_hoc)
+        rows = (id_msv, sv_ten, ngay_sinh, gioi_tinh, dia_chi, id_lnc, nganh_hoc)
 
         conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
         mysearch = conn.cursor()
         search = "select * from DOAN3.SINH_VIEN where lower(id_msv) LIKE :id_msv1"
         mysearch.execute(search,id_msv1=id_msv)
-        mysearch2 = conn.cursor()
-        search2= "select * from DOAN3.SINH_VIEN where sv_ten=:sv_ten1"
-        mysearch2.execute(search2,sv_ten1=sv_ten)
-        data1 = mysearch2.fetchall()
+        # mysearch2 = conn.cursor()
+        # search2= "select * from DOAN3.SINH_VIEN where sv_ten=:sv_ten1"
+        # mysearch2.execute(search2,sv_ten1=sv_ten)
+        # data1 = mysearch2.fetchall()
         data = mysearch.fetchall()
         m=[]
         # self.len= [0,1]
         # self.data=list(self.data)
-        for x in data1:
-            m=x
+        # for x in data1:
+        #     m=x
         for x in data:
             m=x
             print(m)
-        # print(self.data[0],self.data[1])
+        # print(data[0],data[1])
+        so_sv = len(data)
         # print(m)
-
         # ep kieu------------------------------
         m=list(m)
         # m[3]=str(m[3])
         # m[4]=str(m[4])
-        print(m)
+        #                       print(m)
             # print(self.x)
             # print(type(self.x))
-        stu_info=['a','a']
-        stu_info=m
         koco = 'Khong co du lieu'
         koco=str(koco)
+        i = 0
+        while i < so_sv:
+            stu_info=['a','a']
+            stu_info=data[i]
+            i += 1
+            if len(stu_info) > 0:
+                stu_info = str(stu_info[0]+' '+stu_info[1]+' '+stu_info[2]+' '+stu_info[3]+' '+stu_info[4]+' '+stu_info[5]+' '+stu_info[6])
+                
+                self.listWidget_3.addItem(stu_info)
+                self.listWidget_3.setCurrentRow(0)
+            else:
+                self.listWidget_3.addItem(koco)
+        
+        # stu_info1=data[1]
+        
+        
         # # print(self.stu_info)
         # # self.stu_info = str(self.stu_info1)
         print(type(stu_info))
-        if len(stu_info) > 0:
-            stu_info = str(stu_info[0]+' '+stu_info[1]+' '+stu_info[2]+' '+stu_info[3]+' '+stu_info[4]+' '+stu_info[5]+' '+stu_info[6])
-            self.listWidget_3.clear()
-            self.listWidget_3.addItem(stu_info)
-            self.listWidget_3.setCurrentRow(0)
-        else:
-            self.listWidget_3.addItem(koco)
+        
+        # if len(stu_info1) > 0:
+        #     stu_info1 = str(stu_info1[0]+' '+stu_info1[1]+' '+stu_info1[2]+' '+stu_info1[3]+' '+stu_info1[4]+' '+stu_info1[5]+' '+stu_info1[6])
+        #     # self.listWidget_3.clear()
+        #     self.listWidget_3.addItem(stu_info1)
+        #     self.listWidget_3.setCurrentRow(0)
+        # else:
+        #     self.listWidget_3.addItem(koco)
     def clear1(self):
         self.lineEdit.clear()
         self.lineEdit_2.clear()
@@ -168,21 +179,22 @@ class Ui_MainWindow(QDialog):
             "Ban chua nhap, hay nhap di",
             QMessageBox.Cancel)
             return 
-        id_msv=str(id_msv)
+        id_msv=str("%"+id_msv+"%")
         print(id_msv)
         sv_ten=str(sv_ten) 
         ngay_sinh=str(ngay_sinh)
         gioi_tinh=str(gioi_tinh)
         dia_chi=str(dia_chi)
-        # id_lnc=str(id_lnc) 
+        id_lnc=str(id_lnc) 
         nganh_hoc=str(nganh_hoc)
         rows = (id_msv, sv_ten,ngay_sinh,gioi_tinh,dia_chi,id_lnc, nganh_hoc)
         
         conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
         myupdate = conn.cursor()
         # if len(myupdate) > 0:
-        update = "UPDATE DOAN3.SINH_VIEN SET ID_LNC = :id_lnc1 WHERE ID_MSV = :id_msv1"
-        myupdate.execute(update,id_lnc1=id_lnc,id_msv1=id_msv)
+        update = "UPDATE DOAN3.SINH_VIEN SET ID_LNC = :id_lnc1 WHERE lower(ID_MSV) LIKE lower(:id_msv1)"
+
+        myupdate.execute(update, id_lnc1 = id_lnc, id_msv1 = id_msv)
         conn.commit()
         # else:
         #     print("no")
@@ -648,7 +660,8 @@ class Ui_MainWindow(QDialog):
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Giao dien"))
+        MainWindow.setWindowIcon(QIcon("icon.png"))
         self.label_10.setText(_translate("MainWindow", "Student Membership info:"))
         self.label_11.setText(_translate("MainWindow", "Student Database Management Systems"))
         self.label_9.setText(_translate("MainWindow", "Book detail:"))

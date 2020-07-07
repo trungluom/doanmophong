@@ -6,12 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>861</width>
-    <height>655</height>
+    <width>751</width>
+    <height>666</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true"/>
   </property>
   <property name="documentMode">
    <bool>false</bool>
@@ -38,7 +41,7 @@
          <enum>QTabWidget::North</enum>
         </property>
         <property name="currentIndex">
-         <number>0</number>
+         <number>2</number>
         </property>
         <property name="documentMode">
          <bool>true</bool>
@@ -1184,13 +1187,21 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>861</width>
+     <width>751</width>
      <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menufhhfg">
+    <property name="title">
+     <string>fhhfg</string>
+    </property>
+   </widget>
+   <addaction name="menufhhfg"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
- <resources/>
+ <resources>
+  <include location="luom.qrc"/>
+ </resources>
  <connections/>
 </ui>

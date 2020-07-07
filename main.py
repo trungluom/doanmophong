@@ -19,7 +19,7 @@ class Do_an(QMainWindow):
     def __init__(self,parent=None):
         # call QWidget constructor
         super(Do_an, self).__init__()
-        self.ui = Ui_MainWindow()
+        self.ui = open_log()
         self.ui.setupUi(self)
         # self.image = QImage()
         # self.image2 = QImage()

@@ -12,12 +12,14 @@
         # query="select * from users1 where username=%s and password=%s"
         # query="select * from testdb.users where username=self.username and password=self.password"
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import (QDialog,QApplication, QWidget, QToolTip, QPushButton, QMessageBox) 
+from PyQt5 import QtCore, QtGui, QtWidgets
 # import mysql.connector
 import cx_Oracle
 import sys
 from giao_dien_admin import *
 
-class Ui_Form(object):
+class Ui_Form(QDialog):
     # def __init__(self, parent=None):
     #     # call QWidget constructor
     #     super(Ui_Form, self).__init__()
@@ -44,11 +46,18 @@ class Ui_Form(object):
             # self.app.hide()
             # print('thanh cong')          
             pass
-            # self.messagebox("Congrats", "you are logged in")
-        else:
-            # self.warning("alert","enter correct details")
-            # self.login_event
+        elif len(username)==0 and len(password)==0:
             print('that bai')
+            reply = QMessageBox.question(
+            self, "Message",
+            "Bạn chưa nhập, hãy nhập đi!",
+            QMessageBox.Close)
+            return
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Mật khẩu hoặc tên đăng nhập sai!",
+            QMessageBox.Close)
         pass
     def login_event(self,event):
         reply = QMessageBox.question(self,'Login','Login fail, try again!',

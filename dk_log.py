@@ -21,7 +21,7 @@ class dk_log(QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
+    app = QApplication(sys.argv)				
     w=dk_log()
     w.show()
     sys.exit(app.exec_())

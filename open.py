@@ -10,7 +10,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_MainWindow(object):
+class open_log(object):
     
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
@@ -76,16 +76,16 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
         self.label.setText(_translate("MainWindow", "Trường Đại Học Bách Khoa TP HCM"))
         self.label_2.setText(_translate("MainWindow", "Chọn chế độ người dùng:"))
-        self.pushButton.setText(_translate("MainWindow", "Giảng viên"))
+        self.pushButton.setText(_translate("MainWindow","Admin" ))
         self.pushButton_2.setText(_translate("MainWindow", "Sinh viên"))
-        self.pushButton_3.setText(_translate("MainWindow", "Admin"))
+        self.pushButton_3.setText(_translate("MainWindow", "Giảng viên"))
 
 
 if __name__ == "__main__":
     import sys
     app = QtWidgets.QApplication(sys.argv)
     MainWindow = QtWidgets.QMainWindow()
-    ui = Ui_MainWindow()
+    ui = open_log()
     ui.setupUi(MainWindow)
     MainWindow.show()
     sys.exit(app.exec_())

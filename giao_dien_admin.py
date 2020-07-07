@@ -4,13 +4,11 @@ from PyQt5.QtWidgets import (QDialog,QApplication, QWidget, QToolTip, QPushButto
 from PyQt5.QtGui import QIcon
 import sys
 from PyQt5.QtCore import QCoreApplication, Qt
-# from PyQt5.QtWidgets import *
-# from PyQt5.QtGui import *
-# from PyQt5.QtCore import QTimer,QByteArray, QDir
 import  sys
 import cx_Oracle
-# conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
 class Ui_MainWindow(QDialog):
+####################################################function for tab Sinh Vien##################################################
     def closeEvent(self, event):
         reply = QMessageBox.question(
             self, "Message",
@@ -20,6 +18,42 @@ class Ui_MainWindow(QDialog):
             app.quit()
         else:
             pass
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.close()
+    def display_1(self):
+        self.listWidget_3.clear()
+        mysearch = conn.cursor()
+        search= "select * from DOAN3.SINH_VIEN"
+        mysearch.execute(search)
+        data = mysearch.fetchall()
+        m=[]
+        for x in data:
+            m=x
+        so_sv = len(data)
+        print(data)
+        i = 0
+        while i < so_sv:
+            stu_info=data[i]
+            stu_info = list(stu_info)
+            i += 1 
+            if stu_info[0] == None:
+                stu_info[0]='-None-'
+            if stu_info[1] == None:
+                stu_info[1]='-None-'
+            if stu_info[2] == None:
+                stu_info[2]='-None-'
+            if stu_info[3] == None:
+                stu_info[3]='-None-'
+            if stu_info[4] == None:
+                stu_info[4]='-None-'
+            if stu_info[5] == None:
+                stu_info[5]='-None-'
+            if stu_info[6] == None:
+                stu_info[6]='-None-'    
+            stu_info = str(stu_info[0]+'  '+stu_info[1]+'   '+stu_info[2]+'   '+stu_info[3]+'   '+stu_info[4]+'   '+stu_info[5]+'   '+stu_info[6])
+            self.listWidget_3.addItem(stu_info)
+            self.listWidget_3.setCurrentRow(0)
 
     def search(self):
         self.listWidget_3.clear()
@@ -32,70 +66,80 @@ class Ui_MainWindow(QDialog):
         nganh_hoc=self.lineEdit_7.text()
         id_msv=str("%"+id_msv+"%") 
         print(id_msv)
-        sv_ten=str(sv_ten) 
+        sv_ten=str("%"+sv_ten+"%") 
         ngay_sinh=str(ngay_sinh)
-        gioi_tinh=str(gioi_tinh)
+        gioi_tinh=str("%"+gioi_tinh+"%")
         dia_chi=str(dia_chi)
         id_lnc=str(id_lnc) 
-        nganh_hoc=str(nganh_hoc)
+        nganh_hoc=str("%"+nganh_hoc+"%")
         rows = (id_msv, sv_ten, ngay_sinh, gioi_tinh, dia_chi, id_lnc, nganh_hoc)
-
-        conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
-        mysearch = conn.cursor()
-        search = "select * from DOAN3.SINH_VIEN where lower(id_msv) LIKE :id_msv1"
-        mysearch.execute(search,id_msv1=id_msv)
-        # mysearch2 = conn.cursor()
-        # search2= "select * from DOAN3.SINH_VIEN where sv_ten=:sv_ten1"
-        # mysearch2.execute(search2,sv_ten1=sv_ten)
-        # data1 = mysearch2.fetchall()
-        data = mysearch.fetchall()
+        
+        if len(id_msv)>2:
+            # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch = conn.cursor()
+            search = "select * from DOAN3.SINH_VIEN where lower(id_msv) LIKE lower(:id_msv1)"
+            mysearch.execute(search,id_msv1=id_msv)
+            data = mysearch.fetchall()   
+        elif len(sv_ten)>2:
+            conn1 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch2 = conn1.cursor()
+            search2= "select * from DOAN3.SINH_VIEN where lower(sv_ten) LIKE lower(:sv_ten1)"
+            mysearch2.execute(search2,sv_ten1=sv_ten)
+            data = mysearch2.fetchall()
+        elif len(gioi_tinh)>2:
+            conn2 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch3 = conn2.cursor()
+            search3= "select * from DOAN3.SINH_VIEN where lower(gioi_tinh) LIKE lower(:gioi_tinh1)"
+            mysearch3.execute(search3,gioi_tinh1=gioi_tinh)
+            data = mysearch3.fetchall()
+        elif len(nganh_hoc)>3:
+            conn3 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch4 = conn3.cursor()
+            search4= "select * from DOAN3.SINH_VIEN where lower(nganh_hoc) LIKE lower(:nganh_hoc1)"
+            mysearch4.execute(search4,nganh_hoc1=nganh_hoc)
+            data = mysearch4.fetchall()
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Ban chua nhap, hay nhap di",
+            QMessageBox.Close)
+            return
         m=[]
-        # self.len= [0,1]
-        # self.data=list(self.data)
-        # for x in data1:
-        #     m=x
         for x in data:
             m=x
-            print(m)
-        # print(data[0],data[1])
+        
         so_sv = len(data)
-        # print(m)
-        # ep kieu------------------------------
+        
         m=list(m)
-        # m[3]=str(m[3])
-        # m[4]=str(m[4])
-        #                       print(m)
-            # print(self.x)
-            # print(type(self.x))
-        koco = 'Khong co du lieu'
-        koco=str(koco)
+        if len(data) == 0:
+            koco = 'Không có dữ liệu, hãy nhập lại.'
+            self.listWidget_3.addItem(koco)
         i = 0
         while i < so_sv:
-            stu_info=['a','a']
             stu_info=data[i]
+            stu_info = list(stu_info)
             i += 1
-            if len(stu_info) > 0:
-                stu_info = str(stu_info[0]+' '+stu_info[1]+' '+stu_info[2]+' '+stu_info[3]+' '+stu_info[4]+' '+stu_info[5]+' '+stu_info[6])
-                
-                self.listWidget_3.addItem(stu_info)
-                self.listWidget_3.setCurrentRow(0)
-            else:
-                self.listWidget_3.addItem(koco)
+            stu_info1 = []
+            j = 0      
+            if stu_info[0] == None:
+                stu_info[0]='None'
+            if stu_info[1] == None:
+                stu_info[1]='None'
+            if stu_info[2] == None:
+                stu_info[2]='None'
+            if stu_info[3] == None:
+                stu_info[3]='None'
+            if stu_info[4] == None:
+                stu_info[4]='None'
+            if stu_info[5] == None:
+                stu_info[5]='None'
+            if stu_info[6] == None:
+                stu_info[6]='None'
+            print(stu_info)
+            stu_info = str(stu_info[0]+'  '+stu_info[1]+'   '+stu_info[2]+'   '+stu_info[3]+'   '+stu_info[4]+'   '+stu_info[5]+'   '+stu_info[6])
+            self.listWidget_3.addItem(stu_info)
+            self.listWidget_3.setCurrentRow(0)
         
-        # stu_info1=data[1]
-        
-        
-        # # print(self.stu_info)
-        # # self.stu_info = str(self.stu_info1)
-        print(type(stu_info))
-        
-        # if len(stu_info1) > 0:
-        #     stu_info1 = str(stu_info1[0]+' '+stu_info1[1]+' '+stu_info1[2]+' '+stu_info1[3]+' '+stu_info1[4]+' '+stu_info1[5]+' '+stu_info1[6])
-        #     # self.listWidget_3.clear()
-        #     self.listWidget_3.addItem(stu_info1)
-        #     self.listWidget_3.setCurrentRow(0)
-        # else:
-        #     self.listWidget_3.addItem(koco)
     def clear1(self):
         self.lineEdit.clear()
         self.lineEdit_2.clear()
@@ -105,24 +149,7 @@ class Ui_MainWindow(QDialog):
         self.lineEdit_6.clear()
         self.lineEdit_7.clear()
         self.listWidget_3.clear()
-    def clear2(self):
-        self.lineEdit_8.clear()
-        self.lineEdit_9.clear()
-        self.lineEdit_10.clear()
-        self.lineEdit_11.clear()
-        self.lineEdit_12.clear()
-        self.lineEdit_13.clear()
-        self.lineEdit_14.clear()
-        self.lineEdit_15.clear()
-        self.lineEdit_23.clear()
-    def clear3(self):
-        self.lineEdit_16.clear()
-        self.lineEdit_17.clear()
-        self.lineEdit_18.clear()
-        self.lineEdit_19.clear()
-        self.lineEdit_20.clear()
-        self.lineEdit_21.clear()
-        self.lineEdit_22.clear()
+    
     def insert_row(self):
         id_msv=self.lineEdit.text()        
         sv_ten=self.lineEdit_2.text()        
@@ -140,26 +167,40 @@ class Ui_MainWindow(QDialog):
         id_lnc=str(id_lnc) 
         nganh_hoc=str(nganh_hoc)
         rows = (id_msv, sv_ten,ngay_sinh,gioi_tinh,dia_chi,id_lnc, nganh_hoc)
-        
-        conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
-        myinsert = conn.cursor()
-        # insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH, DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:id_msv, :sv_ten, :ngay_sinh, :gioi_tinh, :dia_chi, :id_lnc, :nganh_hoc)"
-        insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH,DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:1,:2,:3,:4,:5,:6,:7)"
-        myinsert.execute(insert,rows)
-        conn.commit()
-        print(myinsert)
+        #######check
+        check_data_coincide = conn.cursor()
+        check = "select * from DOAN3.SINH_VIEN where ID_MSV = :id_msv1"
+        check_data_coincide.execute(check, id_msv1 = id_msv)
+        data_check = check_data_coincide.fetchall()
+        if len(data_check)>0:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Dữ liệu bị trùng, hãy nhập lại!",
+            QMessageBox.Close)
+            print(len(data_check))
+            return##########
+        if len(id_msv)>6 and len(sv_ten)>6 and len(id_lnc)>1:
+            # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            myinsert = conn.cursor()
+            # insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH, DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:id_msv, :sv_ten, :ngay_sinh, :gioi_tinh, :dia_chi, :id_lnc, :nganh_hoc)"
+            insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH,DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:1,:2,:3,:4,:5,:6,:7)"
+            myinsert.execute(insert,rows)
+            conn.commit()
+            print(myinsert)
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Làm ơn nhập vào trước khi thêm!",
+            QMessageBox.Close)
+            return
     def delete_row (self):
         id_msv=self.lineEdit.text() 
-        # sv_ten=self.lineEdit_2.text()
         id_msv=str(id_msv)
-        # sv_ten=str(sv_ten) 
-        # rows1 = (id_msv,sv_ten)
         conn1 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
         mydelete = conn1.cursor()
         print(id_msv)
         delete = "DELETE FROM DOAN3.SINH_VIEN WHERE ID_MSV = :id_msv1"
         mydelete.execute(delete, id_msv1 = id_msv)
-        # mydelete.execute(delete)
         conn1.commit()
         print(mydelete)
         pass
@@ -188,17 +229,464 @@ class Ui_MainWindow(QDialog):
         id_lnc=str(id_lnc) 
         nganh_hoc=str(nganh_hoc)
         rows = (id_msv, sv_ten,ngay_sinh,gioi_tinh,dia_chi,id_lnc, nganh_hoc)
-        
-        conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
         myupdate = conn.cursor()
-        # if len(myupdate) > 0:
         update = "UPDATE DOAN3.SINH_VIEN SET ID_LNC = :id_lnc1 WHERE lower(ID_MSV) LIKE lower(:id_msv1)"
-
         myupdate.execute(update, id_lnc1 = id_lnc, id_msv1 = id_msv)
         conn.commit()
-        # else:
-        #     print("no")
         pass
+
+###################################################function for tab Giang Vien#######################################################
+    def clear2(self):
+        self.lineEdit_8.clear()
+        self.lineEdit_9.clear()
+        self.lineEdit_10.clear()
+        self.lineEdit_11.clear()
+        self.lineEdit_12.clear()
+        self.lineEdit_13.clear()
+        self.lineEdit_14.clear()
+        self.lineEdit_15.clear()
+        self.lineEdit_23.clear()
+    def insert_row_1(self):
+        gv_ten=self.lineEdit_8.text()        ### lấy dữ liệu từ các thanh nhập
+        id_gv=self.lineEdit_9.text()        
+        ngay_sinh=self.lineEdit_10.text()        
+        dia_chi=self.lineEdit_11.text()    
+        gioi_tinh=self.lineEdit_12.text()        
+        hoc_vi=self.lineEdit_13.text()        
+        hoc_ham=self.lineEdit_14.text()    ###
+        noi_cong_tac=self.lineEdit_15.text()    ###
+        thuoc_nhom=self.lineEdit_23.text()    ###        print(id_msv)
+        
+        gv_ten=str(gv_ten) 
+        id_gv=str(id_gv) 
+        ngay_sinh=str(ngay_sinh)
+        dia_chi=str(dia_chi)
+        gioi_tinh=str(gioi_tinh)
+        hoc_vi=str(hoc_vi)
+        hoc_ham=str(hoc_ham) 
+        noi_cong_tac=str(noi_cong_tac)
+        thuoc_nhom=str(thuoc_nhom)
+        rows = (gv_ten,id_gv,ngay_sinh,dia_chi,gioi_tinh,hoc_vi,hoc_ham,noi_cong_tac)
+        ###########check data coincide
+        check_data_coincide = conn.cursor()
+        check = "select * from DOAN3.GIANG_VIEN where ID_GV = :id_gv1"
+        check_data_coincide.execute(check, id_gv1 = id_gv)
+        data_check = check_data_coincide.fetchall()
+        if len(data_check)>0:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Dữ liệu bị trùng, hãy nhập lại!",
+            QMessageBox.Close)
+            print(len(data_check))
+            return
+        elif len(gv_ten)>6 and len(id_gv)>5:
+            # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            myinsert = conn.cursor()
+            # insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH, DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:id_msv, :sv_ten, :ngay_sinh, :gioi_tinh, :dia_chi, :id_lnc, :nganh_hoc)"
+            insert = "INSERT INTO DOAN3.GIANG_VIEN (GV_TEN, ID_GV, NGAY_SINH, DIA_CHI, GIOI_TINH, HOC_VI, HOC_HAM, NOI_CONG_TAC) VALUES (:1,:2,:3,:4,:5,:6,:7,:8)"
+            myinsert.execute(insert,rows)
+            conn.commit()
+            print(myinsert)
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Nhập Tên và MSGV trước khi thêm!",
+            QMessageBox.Close)
+            return
+    def search_2(self):
+        self.listWidget.clear()             ### delete data in listWidget
+        gv_ten=self.lineEdit_8.text()        ### lấy dữ liệu từ các thanh nhập
+        id_gv=self.lineEdit_9.text()        
+        ngay_sinh=self.lineEdit_10.text()        
+        dia_chi=self.lineEdit_11.text()    
+        gioi_tinh=self.lineEdit_12.text()        
+        hoc_vi=self.lineEdit_13.text()        
+        hoc_ham=self.lineEdit_14.text()    ###
+        noi_cong_tac=self.lineEdit_15.text()    ###
+        thuoc_nhom=self.lineEdit_23.text()    ###
+
+        gv_ten=str("%"+gv_ten+"%") 
+        id_gv=str("%"+id_gv+"%") 
+        ngay_sinh=str(ngay_sinh)
+        dia_chi=str(dia_chi)
+        gioi_tinh=str("%"+gioi_tinh+"%")
+        hoc_vi=str(hoc_vi)
+        hoc_ham=str(hoc_ham) 
+        noi_cong_tac=str("%"+noi_cong_tac+"%")
+        thuoc_nhom=str(thuoc_nhom)
+        rows = (gv_ten, id_gv, ngay_sinh, dia_chi,gioi_tinh,hoc_vi,hoc_ham ,noi_cong_tac,thuoc_nhom)
+        
+        if len(gv_ten)>6:
+            # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch = conn.cursor()
+            search = "select * from DOAN3.GIANG_VIEN where lower(gv_ten) LIKE lower(:gv_ten1)"
+            mysearch.execute(search,gv_ten1=gv_ten)
+            data = mysearch.fetchall()   
+        elif len(id_gv)>2:
+            conn1 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch2 = conn1.cursor()
+            search2= "select * from DOAN3.GIANG_VIEN where lower(id_gv) LIKE lower(:id_gv1)"
+            mysearch2.execute(search2,id_gv1=id_gv)
+            data = mysearch2.fetchall()
+        elif len(gioi_tinh)>2:
+            conn2 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch3 = conn2.cursor()
+            search3= "select * from DOAN3.GIANG_VIEN where lower(gioi_tinh) LIKE lower(:gioi_tinh1)"
+            mysearch3.execute(search3,gioi_tinh1=gioi_tinh)
+            data = mysearch3.fetchall()
+        elif len(hoc_vi)>3:
+            conn3 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch4 = conn3.cursor()
+            search4= "select * from DOAN3.GIANG_VIEN where lower(hoc_vi) LIKE lower(:hoc_vi1)"
+            mysearch4.execute(search4,hoc_vi1=hoc_vi)
+            data = mysearch4.fetchall()
+        elif len(hoc_ham)>3:
+            conn4 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe')
+            mysearch5 = conn4.cursor()
+            search5 = "select * from DOAN3.GIANG_VIEN where lower(hoc_ham) LIKE lower(:hoc_ham1)"
+            mysearch5.execute(search5,hoc_ham1= hoc_ham)
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Ban chua nhap, hay nhap di",
+            QMessageBox.Close)
+            return
+        m=[]
+        for x in data:
+            m=x
+        
+        so_sv = len(data)
+        
+        m=list(m)
+        if len(data) == 0:
+            koco = 'Không có dữ liệu, hãy nhập lại.'
+            self.listWidget.addItem(koco)
+        i = 0
+        while i < so_sv:
+            stu_info=data[i]
+            stu_info = list(stu_info)
+            i += 1
+            stu_info1 = []
+            j = 0      
+            if stu_info[0] == None:
+                stu_info[0]='None'
+            if stu_info[1] == None:
+                stu_info[1]='None'
+            if stu_info[2] == None:
+                stu_info[2]='None'
+            if stu_info[3] == None:
+                stu_info[3]='None'
+            if stu_info[4] == None:
+                stu_info[4]='None'
+            if stu_info[5] == None:
+                stu_info[5]='None'
+            if stu_info[6] == None:
+                stu_info[6]='None'
+            if stu_info[7] == None:
+                stu_info[7] = 'None'
+            print(stu_info)
+            stu_info = str(stu_info[0]+'  '+stu_info[1]+'   '+stu_info[2]+'   '+stu_info[3]+'   '+stu_info[4]+'   '+stu_info[5]+'   '+stu_info[6]+'   '+stu_info[7])
+            self.listWidget.addItem(stu_info)
+            self.listWidget.setCurrentRow(0)
+        
+    def display(self):
+        # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        self.listWidget.clear()
+        mysearch = conn.cursor()
+        search= "select * from DOAN3.GIANG_VIEN"
+        mysearch.execute(search)
+        data = mysearch.fetchall()
+        m=[]
+        for x in data:
+            m=x
+        so_gv = len(data)
+        i = 0
+        while i < so_gv:
+            stu_info=data[i]
+            stu_info = list(stu_info)
+            i += 1
+            stu_info1 = []
+            j = 0      
+            if stu_info[0] == None:
+                stu_info[0]='-None-'
+            if stu_info[1] == None:
+                stu_info[1]='-None-'
+            if stu_info[2] == None:
+                stu_info[2]='-None-'
+            if stu_info[3] == None:
+                stu_info[3]='-None-'
+            if stu_info[4] == None:
+                stu_info[4]='-None-'
+            if stu_info[5] == None:
+                stu_info[5]='-None-'
+            if stu_info[6] == None:
+                stu_info[6]='-None-'
+            if stu_info[7] == None:
+                stu_info[7]='-None-'
+
+            stu_info = str(stu_info[0]+'  '+stu_info[1]+'   '+stu_info[2]+'   '+stu_info[3]+'   '+stu_info[4]+'   '+stu_info[5]+'   '+stu_info[6]+'   '+stu_info[7])
+            self.listWidget.addItem(stu_info)
+            self.listWidget.setCurrentRow(0)
+    def deleteRowGv(self):
+        id_gv=self.lineEdit_9.text() 
+        id_gv=str(id_gv)
+        print(id_gv)
+        conn_d = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        mydelete = conn_d.cursor()
+        delete_gv = "DELETE FROM DOAN3.GIANG_VIEN WHERE ID_GV = :id_gv1" 
+        mydelete.execute(delete_gv,id_gv1 = id_gv)
+        conn_d.commit()
+        print(mydelete)
+        pass
+
+    def update_row_1 (self):
+        gv_ten=self.lineEdit_8.text()        ### lấy dữ liệu từ các thanh nhập
+        id_gv=self.lineEdit_9.text()        
+        ngay_sinh=self.lineEdit_10.text()        
+        dia_chi=self.lineEdit_11.text()    
+        gioi_tinh=self.lineEdit_12.text()        
+        hoc_vi=self.lineEdit_13.text()        
+        hoc_ham=self.lineEdit_14.text()    ###
+        noi_cong_tac=self.lineEdit_15.text()    ###
+        thuoc_nhom=self.lineEdit_23.text()    ###
+
+        if len(hoc_ham)>0:
+            hoc_ham=str(hoc_ham)
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Ban chua nhap, hay nhap di",
+            QMessageBox.Cancel)
+            return 
+        id_gv=str("%"+id_gv+"%")
+        gv_ten=str(gv_ten) 
+        ngay_sinh=str(ngay_sinh)
+        gioi_tinh=str(gioi_tinh)
+        dia_chi=str(dia_chi)
+        hoc_vi=str(hoc_vi) 
+        # hoc_ham=str(hoc_ham)
+        noi_cong_tac=str(noi_cong_tac)
+        # rows = (id_msv, sv_ten,ngay_sinh,gioi_tinh,dia_chi,id_lnc, nganh_hoc)
+        # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        myupdate = conn.cursor()
+        update = "UPDATE DOAN3.GIANG_VIEN SET HOC_HAM = :hoc_ham1 WHERE lower(ID_GV) LIKE lower(:id_gv1)"
+        myupdate.execute(update, hoc_ham1= hoc_ham, id_gv1 = id_gv)
+        conn.commit()
+        pass
+################################################### function for tab Mon Hoc #######################################################
+    def clear3(self):
+        self.listWidget_2.clear()
+        self.lineEdit_16.clear()
+        self.lineEdit_17.clear()
+        self.lineEdit_18.clear()
+        self.lineEdit_19.clear()
+        self.lineEdit_20.clear()
+        self.lineEdit_21.clear()
+        self.lineEdit_22.clear()
+
+    def insert_row_2(self):
+        ten_mh=self.lineEdit_16.text()        ### lấy dữ liệu từ các thanh nhập
+        id_mh=self.lineEdit_17.text()        
+        so_tin_chi=self.lineEdit_18.text()        
+        tiet_lt=self.lineEdit_19.text()    
+        tiet_bt=self.lineEdit_20.text()        
+        tiet_thtn=self.lineEdit_21.text()        
+        tiet_tu_hoc=self.lineEdit_22.text()    ###
+        
+        
+        id_mh2=str("%"+id_mh+"%") 
+        id_mh=str(id_mh)
+        ten_mh=str(ten_mh) 
+        so_tin_chi=str(so_tin_chi)
+        tiet_lt=str(tiet_lt)
+        tiet_bt=str(tiet_bt)
+        tiet_thtn=str(tiet_thtn)
+        tiet_tu_hoc=str(tiet_tu_hoc) 
+        rows = (ten_mh,id_mh,so_tin_chi,tiet_lt,tiet_bt,tiet_thtn,tiet_tu_hoc)
+        #####check
+        check_data_coincide = conn.cursor()
+        check = "select * from DOAN3.MONHOC where lower(ID_MH) LIKE :id_mh2"
+        check_data_coincide.execute(check, id_mh2 = id_mh2)
+        data_check = check_data_coincide.fetchall()
+        if len(data_check)>0:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Dữ liệu bị trùng, hãy nhập lại!",
+            QMessageBox.Close)
+            print(len(data_check))
+            return#####
+        if len(id_mh)>1 and len(ten_mh)>6:
+            # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            myinsert = conn.cursor()
+            # insert = "INSERT INTO DOAN3.SINH_VIEN (ID_MSV, SV_TEN, NGAY_SINH, GIOI_TINH, DIA_CHI, ID_LNC, NGANH_HOC) VALUES (:id_msv, :sv_ten, :ngay_sinh, :gioi_tinh, :dia_chi, :id_lnc, :nganh_hoc)"
+            insert = "INSERT INTO DOAN3.MONHOC (TEN_MH,ID_MH, SO_TIN_CHI, TIET_LT, TIET_BT, TIET_THTN, TIET_TU_HOC) VALUES (:1,:2,:3,:4,:5,:6,:7)"
+            myinsert.execute(insert,rows)
+            conn.commit()
+            print(myinsert)
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Làm ơn nhập vào trước khi thêm!",
+            QMessageBox.Close)
+            return
+    def display_2(self):
+        # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        self.listWidget_2.clear()
+        mysearch = conn.cursor()
+        search= "select * from DOAN3.MONHOC"
+        mysearch.execute(search)
+        data = mysearch.fetchall()
+        m=[]
+        for x in data:
+            m=x
+        so_gv = len(data)
+        i = 0
+        while i < so_gv:
+            stu_info=data[i]
+            stu_info = list(stu_info)
+            i += 1
+            stu_info1 = []
+            j = 0      
+            if stu_info[0] == None:
+                stu_info[0]='-None-'
+            if stu_info[1] == None:
+                stu_info[1]='-None-'
+            if stu_info[2] == None:
+                stu_info[2]='-None-'
+            if stu_info[3] == None:
+                stu_info[3]='-None-'
+            if stu_info[4] == None:
+                stu_info[4]='-None-'
+            if stu_info[5] == None:
+                stu_info[5]='-None-'
+            if stu_info[6] == None:
+                stu_info[6]='-None-'
+
+            stu_info = stu_info[0]+'  '+stu_info[1]+'   '+str(stu_info[2])+'   '+str(stu_info[3])+'   '+str(stu_info[4])+'   '+str(stu_info[5])+'   '+str(stu_info[6])
+            self.listWidget_2.addItem(stu_info)
+            self.listWidget_2.setCurrentRow(0)
+        pass
+
+    def search_3(self):
+        self.listWidget_2.clear()             ### delete data in listWidget
+        ten_mh=self.lineEdit_16.text()        ### lấy dữ liệu từ các thanh nhập
+        id_mh=self.lineEdit_17.text()        
+        so_tin_chi=self.lineEdit_18.text()        
+        tiet_lt=self.lineEdit_19.text()    
+        tiet_bt=self.lineEdit_20.text()        
+        tiet_thtn=self.lineEdit_21.text()        
+        tiet_tu_hoc=self.lineEdit_22.text()    ###
+
+        ten_mh=str("%"+ten_mh+"%") 
+        id_mh=str("%"+id_mh+"%") 
+        so_tin_chi=str(so_tin_chi)
+        tiet_lt=str(tiet_lt)
+        tiet_bt=str(tiet_bt)
+        tiet_thtn=str(tiet_thtn)
+        tiet_tu_hoc=str(tiet_tu_hoc) 
+        rows = (ten_mh, id_mh, so_tin_chi, tiet_lt,tiet_bt,tiet_thtn,tiet_tu_hoc)
+        
+        if len(ten_mh)>4:
+            # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch = conn.cursor()
+            search = "select * from DOAN3.MONHOC where lower(TEN_MH) LIKE lower(:ten_mh1)"
+            mysearch.execute(search,ten_mh1=ten_mh)
+            data = mysearch.fetchall()   
+        elif len(id_mh)>4:
+            conn1 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch2 = conn1.cursor()
+            search2= "select * from DOAN3.MONHOC where lower(ID_MH) LIKE lower(:id_mh1)"
+            mysearch2.execute(search2,id_mh1=id_mh)
+            data = mysearch2.fetchall()
+        elif len(so_tin_chi)>0:
+            conn2 = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+            mysearch3 = conn2.cursor()
+            search3= "select * from DOAN3.MONHOC where lower(SO_TIN_CHI) LIKE lower(:so_tin_chi1)"
+            mysearch3.execute(search3,so_tin_chi1=so_tin_chi)
+            data = mysearch3.fetchall()
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Ban chua nhap, hay nhap di",
+            QMessageBox.Close)
+            return
+        m=[]
+        for x in data:
+            m=x
+        
+        so_mh = len(data)
+        
+        m=list(m)
+        if len(data) == 0:
+            koco = 'Không có dữ liệu, hãy nhập lại.'
+            self.listWidget_2.addItem(koco)
+        i = 0
+        while i < so_mh:
+            stu_info=data[i]
+            stu_info = list(stu_info)
+            i += 1
+            if stu_info[0] == None:
+                stu_info[0]='None'
+            if stu_info[1] == None:
+                stu_info[1]='None'
+            if stu_info[2] == None:
+                stu_info[2]='None'
+            if stu_info[3] == None:
+                stu_info[3]='None'
+            if stu_info[4] == None:
+                stu_info[4]='None'
+            if stu_info[5] == None:
+                stu_info[5]='None'
+            if stu_info[6] == None:
+                stu_info[6]='None'
+            print(stu_info)
+            stu_info = stu_info[0]+'  '+stu_info[1]+'   '+str(stu_info[2])+'   '+str(stu_info[3])+'   '+str(stu_info[4])+'   '+str(stu_info[5])+'   '+str(stu_info[6])
+            self.listWidget_2.addItem(stu_info)
+            self.listWidget_2.setCurrentRow(0)
+
+    def deleteRowMh(self):
+        id_mh=self.lineEdit_17.text() 
+        id_mh=str(id_mh)
+        conn_d = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        mydelete = conn_d.cursor()
+        delete_mh = "DELETE FROM DOAN3.MONHOC WHERE ID_MH = :id_mh1" 
+        mydelete.execute(delete_mh, id_mh1=id_mh)
+        conn_d.commit()
+        print(mydelete)
+        pass
+    def updateRowMh (self):
+        ten_mh=self.lineEdit_16.text()        ### lấy dữ liệu từ các thanh nhập
+        id_mh=self.lineEdit_17.text()        
+        so_tin_chi=self.lineEdit_18.text()        
+        tiet_lt=self.lineEdit_19.text()    
+        tiet_bt=self.lineEdit_20.text()        
+        tiet_thtn=self.lineEdit_21.text()        
+        tiet_tu_hoc=self.lineEdit_22.text()    ###
+        if len(ten_mh)>0:
+            ten_mh=str(ten_mh)
+        else:
+            reply = QMessageBox.question(
+            self, "Message",
+            "Ban chua nhap, hay nhap di",
+            QMessageBox.Cancel)
+            return 
+        # ten_mh=str(ten_mh)
+        print(ten_mh)
+        id_mh=str(id_mh) 
+        so_tin_chi=str(so_tin_chi)
+        tiet_lt=str(tiet_lt)
+        tiet_bt=str(tiet_bt)
+        tiet_thtn=str(tiet_thtn) 
+        tiet_tu_hoc=str(tiet_tu_hoc)
+        rows = (ten_mh,id_mh ,so_tin_chi,tiet_lt,tiet_bt,tiet_thtn,tiet_tu_hoc)
+        # conn = cx_Oracle.connect('DOAN3/123@//localhost:1521/xe') 
+        myupdate = conn.cursor()
+        update = "UPDATE DOAN3.MONHOC SET TEN_MH = :ten_mh1 WHERE lower(ID_MH) LIKE lower(:id_mh1)"
+        myupdate.execute(update, ten_mh1 = ten_mh, id_mh1= id_mh)
+        conn.commit()
+        pass
+
     def giaodien_admin(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(861, 655)
@@ -340,6 +828,7 @@ class Ui_MainWindow(QDialog):
         self.horizontalLayout_2.addWidget(self.pushButton)
         self.pushButton_2 = QtWidgets.QPushButton(self.tab_1)
         self.pushButton_2.setObjectName("pushButton_2")
+        self.pushButton_2.clicked.connect(self.display_1)
         self.horizontalLayout_2.addWidget(self.pushButton_2)
         self.pushButton_3 = QtWidgets.QPushButton(self.tab_1)
         self.pushButton_3.setObjectName("pushButton_3")
@@ -486,9 +975,11 @@ class Ui_MainWindow(QDialog):
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
         self.pushButton_8 = QtWidgets.QPushButton(self.tab_2)
         self.pushButton_8.setObjectName("pushButton_8")
+        self.pushButton_8.clicked.connect(self.insert_row_1)
         self.horizontalLayout_3.addWidget(self.pushButton_8)
         self.pushButton_9 = QtWidgets.QPushButton(self.tab_2)
         self.pushButton_9.setObjectName("pushButton_9")
+        self.pushButton_9.clicked.connect(self.display)
         self.horizontalLayout_3.addWidget(self.pushButton_9)
         self.pushButton_10 = QtWidgets.QPushButton(self.tab_2)
         self.pushButton_10.setObjectName("pushButton_10")
@@ -496,15 +987,19 @@ class Ui_MainWindow(QDialog):
         self.horizontalLayout_3.addWidget(self.pushButton_10)
         self.pushButton_11 = QtWidgets.QPushButton(self.tab_2)
         self.pushButton_11.setObjectName("pushButton_11")
+        self.pushButton_11.clicked.connect(self.deleteRowGv)
         self.horizontalLayout_3.addWidget(self.pushButton_11)
         self.pushButton_12 = QtWidgets.QPushButton(self.tab_2)
         self.pushButton_12.setObjectName("pushButton_12")
+        self.pushButton_12.clicked.connect(self.search_2)
         self.horizontalLayout_3.addWidget(self.pushButton_12)
         self.pushButton_13 = QtWidgets.QPushButton(self.tab_2)
         self.pushButton_13.setObjectName("pushButton_13")
+        self.pushButton_13.clicked.connect(self.update_row_1)
         self.horizontalLayout_3.addWidget(self.pushButton_13)
         self.pushButton_14 = QtWidgets.QPushButton(self.tab_2)
         self.pushButton_14.setObjectName("pushButton_14")
+
         self.pushButton_14.clicked.connect(self.closeEvent)
         self.horizontalLayout_3.addWidget(self.pushButton_14)
         self.gridLayout_2.addLayout(self.horizontalLayout_3, 4, 1, 1, 3)
@@ -618,9 +1113,11 @@ class Ui_MainWindow(QDialog):
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
         self.pushButton_15 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_15.setObjectName("pushButton_15")
+        self.pushButton_15.clicked.connect(self.insert_row_2)
         self.horizontalLayout_4.addWidget(self.pushButton_15)
         self.pushButton_16 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_16.setObjectName("pushButton_16")
+        self.pushButton_16.clicked.connect(self.display_2)
         self.horizontalLayout_4.addWidget(self.pushButton_16)
         self.pushButton_17 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_17.setObjectName("pushButton_17")
@@ -628,12 +1125,15 @@ class Ui_MainWindow(QDialog):
         self.horizontalLayout_4.addWidget(self.pushButton_17)
         self.pushButton_18 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_18.setObjectName("pushButton_18")
+        self.pushButton_18.clicked.connect(self.deleteRowMh)
         self.horizontalLayout_4.addWidget(self.pushButton_18)
         self.pushButton_19 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_19.setObjectName("pushButton_19")
+        self.pushButton_19.clicked.connect(self.search_3)
         self.horizontalLayout_4.addWidget(self.pushButton_19)
         self.pushButton_20 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_20.setObjectName("pushButton_20")
+        self.pushButton_20.clicked.connect(self.updateRowMh)
         self.horizontalLayout_4.addWidget(self.pushButton_20)
         self.pushButton_21 = QtWidgets.QPushButton(self.tab_3)
         self.pushButton_21.setObjectName("pushButton_21")
@@ -662,8 +1162,8 @@ class Ui_MainWindow(QDialog):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "Giao dien"))
         MainWindow.setWindowIcon(QIcon("icon.png"))
-        self.label_10.setText(_translate("MainWindow", "Student Membership info:"))
-        self.label_11.setText(_translate("MainWindow", "Student Database Management Systems"))
+        self.label_10.setText(_translate("MainWindow", "Students Membership info:"))
+        self.label_11.setText(_translate("MainWindow", "Bach Khoa Database Management Systems"))
         self.label_9.setText(_translate("MainWindow", "Book detail:"))
         self.label.setText(_translate("MainWindow", "MSSV:"))
         self.label_2.setText(_translate("MainWindow", "Ho va ten:"))
@@ -680,8 +1180,8 @@ class Ui_MainWindow(QDialog):
         self.pushButton_6.setText(_translate("MainWindow", "Update"))
         self.pushButton_7.setText(_translate("MainWindow", "Exit"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_1), _translate("MainWindow", "Sinh Vien"))
-        self.label_26.setText(_translate("MainWindow", "Student Database Management Systems"))
-        self.label_27.setText(_translate("MainWindow", "Student Membership info:"))
+        self.label_26.setText(_translate("MainWindow", "Bach Khoa Database Management Systems"))
+        self.label_27.setText(_translate("MainWindow", "Lecturers Membership info:"))
         self.label_28.setText(_translate("MainWindow", "Book detail:"))
         self.label_8.setText(_translate("MainWindow", "Ho va ten:"))
         self.label_12.setText(_translate("MainWindow", "MSGV:"))
@@ -700,8 +1200,8 @@ class Ui_MainWindow(QDialog):
         self.pushButton_13.setText(_translate("MainWindow", "Update"))
         self.pushButton_14.setText(_translate("MainWindow", "Exit"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Giang Vien"))
-        self.label_31.setText(_translate("MainWindow", "Student Database Management Systems"))
-        self.label_30.setText(_translate("MainWindow", "Student Membership info:"))
+        self.label_31.setText(_translate("MainWindow", "Bach Khoa Database Management Systems"))
+        self.label_30.setText(_translate("MainWindow", "Subjects info:"))
         self.label_29.setText(_translate("MainWindow", "Book detail:"))
         self.label_19.setText(_translate("MainWindow", "Tên môn học:"))
         self.label_20.setText(_translate("MainWindow", "Mã môn học:"))

@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>anonymous-bitcoin-wallets.png</file>
+  </qresource>
+</RCC>
